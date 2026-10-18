@@ -51,41 +51,53 @@ TakeMeter classifies public discussion posts from **r/NBATalk**, a large public 
 
 ## Label Taxonomy
 
-<!-- Each label: a one-sentence definition and two real examples from your
-     reading. Then your decision rule for the hardest boundary.
+### `analysis`
 
-     The decision rule is worth a point on its own and it's the thing most
-     people leave out. Every taxonomy has a hardest boundary. Name yours. -->
-
-### `label_one`
-
-**Definition:**
+**Definition:** Advances a basketball claim and supports it with at least one specific, checkable fact, statistic, record, date, quote, or piece of basketball evidence that is used to justify the claim.
 
 **Example 1:**
->
+> “Who’s ranked higher all-time: Carmelo or PG13?” — the post compares All-Star selections, All-NBA teams, and MVP finishes before asking for the ranking.
 
 **Example 2:**
->
+> “The 5 greatest playoffs performances of all time in my opinion.” — the post lists specific point, rebound, assist, and block totals for each selected performance.
 
-### `label_two`
+### `hot_take`
 
-**Definition:**
+**Definition:** Advances a confident evaluative basketball claim or ranking without giving specific, checkable support for the central claim.
 
 **Example 1:**
->
+> “MIKE BROWN is not getting enough credit as Reason Knicks won the chip… this dude was ZEN MASTER 2.0.”
 
 **Example 2:**
->
+> “If you don’t have MJ, Lebron, Russell, Wilt, Shaq, Kobe, Duncan, Kareem, Hakeem, Bird, Magic all in your top five you don’t know ball.”
+
+### `reaction`
+
+**Definition:** Primarily reports or responds to a recent NBA event, quote, result, image, or news item with short commentary or emotion instead of building a sustained argument.
+
+**Example 1:**
+> “This is hilarious, Ben Simmons ain't win MVP ever.”
+
+**Example 2:**
+> “Did not expect that ending lmao.”
+
+### `discussion_question`
+
+**Definition:** Primarily invites readers to compare, rank, predict, choose, or explain something without the author committing to a substantive answer of their own.
+
+**Example 1:**
+> “Is Blake Griffin a Hall of Famer?”
+
+**Example 2:**
+> “Which big 3 would you build around?”
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `analysis` and `hot_take`
 
-**The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+**The decision rule I used every time:** If the post makes a central evaluative claim and uses at least one specific, checkable fact, statistic, record, date, quote, or observable basketball detail **as evidence for that claim**, label it `analysis`. If it makes the claim confidently but provides no such support, label it `hot_take`. Merely mentioning a player, score, event, or number is not enough; the evidence has to do argumentative work.
 
-
+**Secondary boundary rule:** If a post is phrased as a question but the author clearly gives their own verdict and argues for it, classify it as `analysis` or `hot_take` according to the evidence rule above. Use `discussion_question` only when the post's main purpose is genuinely to solicit other people's answers.
 
 ---
 
