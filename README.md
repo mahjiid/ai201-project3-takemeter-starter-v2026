@@ -39,10 +39,13 @@
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
+TakeMeter classifies public discussion posts from **r/NBATalk**, a large public NBA discussion community. I chose it because the feed contains a real mix of evidence-backed basketball arguments, unsupported opinion posts, immediate reactions to news or events, and open-ended discussion prompts. The classifier will learn to separate those writing patterns rather than judge whether an opinion is correct.
 
+**Milestone 1 observations from reading the community**
 
+- Some posts support a claim with checkable evidence such as statistics, awards, dates, records, or explicit historical comparisons; others make equally strong claims without showing evidence.
+- Some posts are mainly immediate reactions to recent news, a quote, a result, or an image, while others are intended as broader arguments that should still make sense after the event passes.
+- A large share of posts are neutral questions asking readers to compare, rank, predict, or choose, which is different from the author making their own evaluative claim.
 
 ---
 
