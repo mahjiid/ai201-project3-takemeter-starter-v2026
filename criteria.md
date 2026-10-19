@@ -51,64 +51,49 @@ whether you hit them:
 
 ---
 
-## 1.
+## 1. Overall accuracy
 
-<!-- Your criterion. It must name a number. -->
-
-
+The fine-tuned classifier should achieve **at least 70% overall accuracy** on the held-out test set.
 
 **Why this target:**
 
-
-
+<!-- Write your reason here. -->
 ---
 
-## 2.
+## 2. Minimum per-label performance
 
-<!-- Your criterion. -->
-
-
+Every label should achieve an **F1 score of at least 0.55** on the held-out test set.
 
 **Why this target:**
 
-
-
+<!-- Write your reason here. -->
 ---
 
-## 3.
+## 3. Macro F1
 
-<!-- Your criterion. -->
-
-
+The classifier should achieve a **macro F1 score of at least 0.60** on the held-out test set.
 
 **Why this target:**
 
-
-
+<!-- Write your reason here. -->
 ---
 
-## 4.
+## 4. Dataset balance
 
-<!-- Your criterion. -->
-
-
+No single label should make up **more than 45% of the final labeled dataset**.
 
 **Why this target:**
 
-
-
+<!-- Write your reason here. -->
 ---
 
-## 5.
+## 5. Human labeling consistency
 
-<!-- Your criterion. -->
-
-
+When another person applies the same taxonomy to a shared sample, the labels should agree with mine on **at least 80% of posts**.
 
 **Why this target:**
 
-
-
+<!-- Write your reason here. -->
 ---
 
 <!-- ─────────────────────────────────────────────────────────────────────────
