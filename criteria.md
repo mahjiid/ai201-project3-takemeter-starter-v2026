@@ -57,7 +57,8 @@ The fine-tuned classifier should achieve **at least 70% overall accuracy** on th
 
 **Why this target:**
 
-<!-- Write your reason here. -->
+I want it to get at least 7 out of 10 posts right.
+
 ---
 
 ## 2. Minimum per-label performance
@@ -66,7 +67,8 @@ Every label should achieve an **F1 score of at least 0.55** on the held-out test
 
 **Why this target:**
 
-<!-- Write your reason here. -->
+I don't want any one label to perform very poorly.
+
 ---
 
 ## 3. Macro F1
@@ -75,7 +77,8 @@ The classifier should achieve a **macro F1 score of at least 0.60** on the held-
 
 **Why this target:**
 
-<!-- Write your reason here. -->
+I want good performance across all four labels.
+
 ---
 
 ## 4. Dataset balance
@@ -84,7 +87,8 @@ No single label should make up **more than 45% of the final labeled dataset**.
 
 **Why this target:**
 
-<!-- Write your reason here. -->
+I don't want one label to dominate the dataset.
+
 ---
 
 ## 5. Human labeling consistency
@@ -93,7 +97,8 @@ When another person applies the same taxonomy to a shared sample, the labels sho
 
 **Why this target:**
 
-<!-- Write your reason here. -->
+I want another person to usually interpret my labels the same way.
+
 ---
 
 <!-- ─────────────────────────────────────────────────────────────────────────
