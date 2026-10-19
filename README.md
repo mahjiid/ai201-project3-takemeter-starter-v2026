@@ -103,48 +103,44 @@ TakeMeter classifies public discussion posts from **r/NBATalk**, a large public 
 
 ## The Dataset
 
-<!-- Where you collected from, how you labelled, your counts, and three hard
-     cases. -->
+**Where the posts came from:** Public posts from **r/NBATalk** on Reddit. I collected whole visible post text and excluded comments and advertisements.
 
-**Where the posts came from:**
-
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** I labelled the first 20 posts cold without AI assistance. AI then pre-labelled 180 additional posts using my taxonomy, and I reviewed and approved that batch before training. The final file stays as one unsplit `labels.csv` with `text`, `label`, and `note` columns.
 
 **Counts per label:**
 
 | Label | Count | Share |
-|---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+|---|---:|---:|
+| `analysis` | 43 | 21.5% |
+| `hot_take` | 52 | 26.0% |
+| `reaction` | 32 | 16.0% |
+| `discussion_question` | 73 | 36.5% |
+| **Total** | **200** | **100%** |
+
+No label exceeds 45% of the dataset, so the dataset also meets my own balance criterion.
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
+> *The post:* “What’s a controversial NBA take that you would stand on no matter how many people disagree? Mine is that fan obsession with ring culture has completely ruined how we evaluate individual greatness...”
 >
-> *Could have been:*
+> *Could have been:* `hot_take` or `discussion_question`
 >
-> *I chose, because:*
+> *I chose, because:* `hot_take`. Although the title asks a question, the author gives a clear unsupported position of their own.
 
 **2.**
-> *The post:*
+> *The post:* “Is it fair to still call Jokic the best in the world? ... 3 straight seasons of no deep playoff runs with extremely disastrous endings?”
 >
-> *Could have been:*
+> *Could have been:* `hot_take`, `analysis`, or `discussion_question`
 >
-> *I chose, because:*
+> *I chose, because:* `hot_take`. The author is pushing a position rather than only inviting answers, but the support is too thin to count as a developed evidence-backed analysis.
 
 **3.**
-> *The post:*
+> *The post:* “What if hand checking came back ... I kinda feel like it may bring a little balance back ... So your thoughts ... Yeah or nay?”
 >
-> *Could have been:*
+> *Could have been:* `discussion_question` or `hot_take`
 >
-> *I chose, because:*
+> *I chose, because:* `discussion_question`. The author gives a tentative view, but the main purpose of the post is still to solicit other people’s answers.
 
 ---
 
@@ -168,26 +164,20 @@ of next unit's variance. -->
 
 ## How I Used AI
 
-<!-- Two specific moments — what you asked, what came back, what you changed.
-
-     ⚠️ Plus disclosure of any pre-labelling. If you had a model pre-label a
-     batch and then read and corrected every one, say that. It's an allowed
-     workflow and disclosing it costs you nothing. Not disclosing it is the
-     problem. -->
-
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Help stress-test the distinctions I observed in r/NBATalk and check whether the proposed labels had clear boundaries.
+- *What came back:* Boundary questions around evidence-backed claims, unsupported takes, reactions, and neutral discussion prompts.
+- *What I changed:* I kept four labels and wrote explicit rules for the hardest `analysis` vs `hot_take` boundary and for question-shaped posts that contain an author opinion.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Pre-label the non-cold portion of the collected dataset using my taxonomy and flag class-balance problems.
+- *What came back:* An initial pre-label draft where `reaction` was too thin, followed by a corrected draft with better coverage of clear news/highlight/reaction posts.
+- *What I changed:* I reviewed and approved the AI-assisted labels before training, while keeping the first 20 rows as my unaided `cold` labels.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** AI pre-labelled 180 of the 200 posts. I reviewed and approved that batch before training. The first 20 posts were labelled cold without AI assistance.
+
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
