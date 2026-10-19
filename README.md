@@ -146,19 +146,24 @@ No label exceeds 45% of the dataset, so the dataset also meets my own balance cr
 
 ## The Training Run
 
-<!-- Your starting model, your settings, and anything you changed and why. -->
+**Base model:** `distilbert-base-uncased` (DistilBERT)
 
-**Base model:**
+**Settings:** 3 epochs, learning rate `2e-5`, batch size 16, maximum length 128 tokens, seed 42.
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Anything I changed from the defaults, and why:** I kept the starter training hyperparameters unchanged so the first run is directly comparable to the course defaults.
 
-**Anything I changed from the defaults, and why:**
+**Training device:** CPU (`torch 2.14.1+cpu`).
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Split sizes:** 139 train / 31 validation / 30 test.
 
+| Label | Train | Validation | Test |
+|---|---:|---:|---:|
+| `analysis` | 30 | 7 | 6 |
+| `hot_take` | 36 | 8 | 8 |
+| `reaction` | 22 | 5 | 5 |
+| `discussion_question` | 51 | 11 | 11 |
 
+The held-out test split has only 6 `analysis` examples and 5 `reaction` examples. I recorded that now because per-label metrics for those classes may move substantially between seeds in Unit 6.
 
 ---
 
