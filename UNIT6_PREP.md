@@ -1,57 +1,51 @@
-# Unit 6 — TakeMeter testing preparation (2026-10-22)
+# CodePath AI201 — TakeMeter Unit 6 current handoff (updated October 22, 2026)
 
-This is a preparation/audit note, **not** a completed Unit 6 submission. Do not report three-seed, baseline, agreement, or post-improvement values until they have been measured.
+**This replaces the initial pre-testing checklist.** The authoritative detailed report is in `README.md`; this file is the operational handoff for another agent or the project owner.
 
-## Existing artifacts verified on GitHub
-- `criteria.md`, `labels.csv`, `label_definitions.txt`, `results.json`, and `test_split.csv` are present.
-- Existing fine-tuned result: seed 42; 30 test examples; accuracy 11/30 = **0.3667**; macro F1 **0.1341**; CPU.
-- Original class distribution: analysis 43, hot_take 52, reaction 32, discussion_question 73; max share 36.5%, below precommitted 45% limit.
-- Per-label F1 at seed 42: analysis 0.000; hot_take 0.000; reaction 0.000; discussion_question 0.5366.
+## Current progress — verified
 
-### Original seed-42 confusion matrix — NOT the new three-seed result
-Rows are true labels; columns are predictions.
+| Required artifact | State |
+|---|---|
+| Original Unit 5 criteria and labels | Preserved in `criteria.md`, `labels.csv`, `label_definitions.txt` |
+| Baseline on the original 30 held-out posts | **Measured**, `baseline_results.json`: accuracy 0.1333 |
+| 3-seed run with 3 epochs | **Measured**, `results_three_seeds_before.json`: accuracy 0.3667 / 0.4333 / 0.3667 |
+| 3-seed single-change improvement with 6 epochs | **Measured**, `results_three_seeds_after.json`: accuracy 0.5333 / 0.5000 / 0.5000 |
+| Baseline comparison, confusion matrices, diagnoses, before-vs-after | **Documented** in `README.md` |
+| Staff-independent 30-row labels | **Pending human decisions**; `staff_annotation_helper.html` is ready |
+| TF reference answers | **Not received**; no `data/staff_labels.csv` |
+| Agreement rate and adjudications | **Not performed** until both sets exist |
+| Final submission | **Not yet complete** |
 
-| true \\ predicted | analysis | hot_take | reaction | discussion_question |
-|---|---:|---:|---:|---:|
-| analysis | 0 | 0 | 0 | 6 |
-| hot_take | 0 | 0 | 0 | 8 |
-| reaction | 0 | 0 | 0 | 5 |
-| discussion_question | 0 | 0 | 0 | 11 |
+Three-epoch to six-epoch training improved mean accuracy from **38.9% to 51.1%**, but `reaction` F1 remains **0** across all three improved seeds. Meeting the originally declared thresholds is *not* required for credit; diagnose misses honestly. Do not invent improved accuracy, staff agreement, or decisions.
 
-**Diagnosis to investigate:** The original model assigned every example to `discussion_question`. That is consistent with class collapse and requires further tests to distinguish training/configuration problems from data/label ambiguity. It does NOT establish the cause.
+## The one essential human step: 30 independent labels
 
-## Precommitted criteria: preserve originals unchanged
-1. Overall test accuracy >= 70% on **each** of three trials.
-2. Every label F1 >= 0.55 on **each** trial.
-3. Macro F1 >= 0.60 on **each** trial.
-4. No class over 45% of the final labeled dataset.
-5. Human annotation agreement >= 80% on an independently annotated shared sample.
+On ZairPlanet, the repository lives at:
 
-Criterion 4 can already be checked on the original 200-label dataset (MET: 36.5% max). Criterion 5 must be checked using independently labeled posts and the specified taxonomy; the provided staff exercise uses *different* staff-defined labels, so discuss this measurement distinction explicitly rather than pretending those definitions are identical to the NBA taxonomy.
+`C:\Users\mahjiid\Documents\Projects\CodePath\ai201-project3-takemeter-starter-v2026`
 
-## Baseline prediction (recorded before baseline results)
-The original fine-tuned model collapsed to one class. I therefore expect the label-definition-guided zero-shot baseline may outperform its 36.7% accuracy and its poor minority-class F1; this must be tested on the identical 30-post held-out set.
+1. Open `staff_annotation_helper.html` in a browser (this was already opened automatically). Read `data/staff_taxonomy.md` to follow staff decision rules rather than the four-label NBA taxonomy. The helper displays those rules for convenience.
+2. Choose **analysis**, **hot_take**, or **reaction** on all **30** original running-forum posts. Labels are deliberately *not* prefilled by AI. Download `my_staff_labels.csv` when the helper displays 30/30.
+3. Move the exported file from Downloads into the repository root as `my_staff_labels.csv`, without changing texts.
+4. Run `python scripts/validate_and_prepare_agreement.py`. Python standard library suffices; it checks 30 exact original texts and permitted label values. At this stage it should say staff labels are missing.
+5. **Only after recording your own labels**, ask your CodePath teaching fellow for `data/staff_labels.csv`. Put that file in `data/` locally. It is ignored in Git to avoid distributing the answer key publicly.
+6. Run `python scripts/validate_and_prepare_agreement.py` again. It writes the actual `agreement_results.json` and `staff_adjudications.md` templates, listing each disagreement.
+7. For **every** disagreement, personally decide which label better follows the staff definition and explain why, categorizing as (a) applied existing rule loosely, (b) rule genuinely missing, or (c) reasonable ambiguity. Keep the adjudication in your own words.
+8. Copy the full agreement report into the `README.md` Agreement section, with a candid diagnosis. Commit and push `my_staff_labels.csv`, `agreement_results.json`, `staff_adjudications.md`, and the updated README. Do not commit `data/staff_labels.csv`.
+9. Submit the **same GitHub repository URL** used for Unit 5: https://github.com/mahjiid/ai201-project3-takemeter-starter-v2026.
 
-## Commands and execution order
-On a working environment inside this **same** repository:
-```powershell
-.venv\Scripts\Activate.ps1
-python test.py
-python baseline.py
-python baseline.py --trained results.json
-```
-- Preserve and commit `baseline_results.json`, and paste the measured baseline-vs-trained table in README.
-- In `takemeter.ipynb`, run section 1 first; run section 6 with `RUN_LABEL = "before"` for seeds 42, 7, 2024, then section 7; commit `results_three_seeds_before.json` and a typed Markdown confusion matrix.
-- Read `data/staff_taxonomy.md` and **personally** label all 30 original, unchanged texts in `data/staff_posts.csv` into `my_staff_labels.csv` without accessing staff answers first. Staff taxonomy is running-forum labels (`analysis`, `hot_take`, `reaction`), not the four-label r/NBATalk taxonomy.
-- Request `data/staff_labels.csv` from the teaching fellow **only after** saving personal annotations; run `python agreement.py`; adjudicate every disagreement with a reason, not automatic deference.
-- Compare all five targets across three seeds. Select one evidence-based improvement only. Preserve before results. Set `RUN_LABEL = "after"`; rerun exactly the same three seeds; commit `results_three_seeds_after.json`.
-- Complete README sections **Baseline vs. Trained**, **Run Log — Before**, **Verdicts and Diagnoses**, **Agreement Report**, **The Improvement**, and **What's Still Broken** and explain AI assistance honestly.
-- Use at least four new commits for the Unit 6 work, and submit the *same repo URL*.
+**Due: Monday October 26, 2026 at 07:59 WAT (UTC+1).** The separate CodePath attendance appeal remains a program-enrollment matter and is not resolved by publishing coursework.
 
-## Blocking gaps as of preparation
-- No Unit 6 baseline run or three-seed run has been verified.
-- No personally labeled 30-row staff annotation file exists in the GitHub repository.
-- No staff reference labels are present; obtain them from the TF at the instructed time.
-- The inspected Windows global Python environment lacks PyTorch. Locate or recreate the project's .venv and check dependencies + available memory/disk space before training. Avoid treating this check as evidence that every local environment is missing packages.
+## Technical state
 
-Due: **2026-10-26 at 07:59 West Africa Time (UTC+1)**.
+- GitHub-hosted Linux Python evaluation succeeded for both the baseline and three-seed before/after model runs. JSON measurement files are committed, not estimates.
+- The lightweight verification workflow passed on GitHub Actions: https://github.com/mahjiid/ai201-project3-takemeter-starter-v2026/actions/runs/39792506506
+- The original evaluation workflow showed a red badge because of a Git push race. The recovery workflow committed all three output files successfully, but itself reported a non-critical post-job pip-cache cleanup error. The later lightweight verification passed.
+- The local Windows repository is synchronized; a virtual environment exists, but heavy PyTorch/model dependencies were **not successfully installed** locally because downloads were slow. Do not claim the local model stack is operational. Staff-annotation validator works using only standard-library Python.
+- The `scripts/run_unit6.py` runner is available for repeatable future evaluation. Avoid re-running the single improvement unless needed for evidence; the assignment calls for exactly one measured change.
+- Five synthetic-only tests in `tests/test_staff_pipeline.py` passed locally; they check that the pipeline refuses missing/invalid annotations and does not fabricate agreement.
+- No secrets, actual student records, or staff reference answers should be committed. Staff-provided labels are ignored by `.gitignore`.
+
+## Completion gate
+
+**Do not report the Unit 6 submission as complete** until the independently labeled personal CSV, actual TF reference set, agreement output, every adjudication, and final updated README are present and reviewed.
