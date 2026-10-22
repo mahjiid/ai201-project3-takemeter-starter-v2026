@@ -275,27 +275,52 @@ I have prepared `staff_annotation_worksheet.csv` with the exact 30 texts and emp
 
 ### Run Log — After
 
-**Pending measured six-epoch run.** Do not copy before values here or invent improved scores.
+**Actual measured experiment:** `EPOCHS: 3 → 6` and **no other changes** (same dataset, taxonomy, learning rate, batch size, and seeds). Run in GitHub Actions Linux CPU. The authentic values below are from `results_three_seeds_after.json`.
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1. Accuracy | ≥ 0.70 | pending | pending | pending | Pending |
-| 2. Minimum label F1 | ≥ 0.55 | pending | pending | pending | Pending |
-| 3. Macro F1 | ≥ 0.60 | pending | pending | pending | Pending |
-| 4. Class share | ≤ 45% | 36.5% | 36.5% | 36.5% | MET |
-| 5. Human consistency | ≥ 80% | pending | pending | pending | Pending |
+|---|---|---:|---:|---:|---|
+| 1. Accuracy | ≥ 0.70 | 0.533 | 0.500 | 0.500 | **MISSED** |
+| 2. Minimum label F1 | ≥ 0.55 | 0.000 | 0.000 | 0.000 | **MISSED** |
+| 3. Macro F1 | ≥ 0.60 | 0.416 | 0.349 | 0.375 | **MISSED** |
+| 4. Class share | ≤ 45% | 36.5% | 36.5% | 36.5% | **MET** |
+| 5. Human consistency | ≥ 80% | not measured | not measured | not measured | **PENDING** |
 
-**Did it help?** To be determined only after `results_three_seeds_after.json` is generated and verified.
+#### Before versus after (three-seed results)
 
+| Measure | Before (3 epochs), seeds 42/7/2024 | After (6 epochs), seeds 42/7/2024 |
+|---|---|---|
+| Accuracy | 0.367 / 0.433 / 0.367 | **0.533 / 0.500 / 0.500** |
+| Macro F1 | 0.134 / 0.236 / 0.134 | **0.416 / 0.349 / 0.375** |
+| F1 — `analysis` | 0 / 0 / 0 | 0.429 / 0.400 / 0.500 |
+| F1 — `hot_take` | 0 / 0.333 / 0 | 0.545 / 0.308 / 0.308 |
+| F1 — `reaction` | 0 / 0 / 0 | **0 / 0 / 0** |
+| F1 — `discussion_question` | 0.537 / 0.611 / 0.537 | 0.690 / 0.688 / 0.692 |
+
+**Did it help? Yes, but not enough.** Mean accuracy increased from **38.9% to 51.1%** (+12.2 percentage points), and mean macro F1 rose from **0.168 to 0.380** (+0.212). The model began recognizing `analysis` and `hot_take`, but **never correctly recognized `reaction`** across any seed, and none of the original performance criteria became met. Increased training exposure was helpful but cannot by itself make this a reliable classifier.
+
+#### After-run confusion matrix — seed 42
+
+| true \\ predicted | analysis | hot_take | reaction | discussion_question |
+|---|---:|---:|---:|---:|
+| **analysis** | 3 | 0 | 0 | 3 |
+| **hot_take** | 2 | 3 | 1 | 2 |
+| **reaction** | 2 | 0 | 0 | 3 |
+| **discussion_question** | 1 | 0 | 0 | 10 |
+
+All five actual `reaction` posts in this seed were misclassified: two as `analysis` and three as `discussion_question`. That is now the highest-priority unresolved error.
 ---
 
 ## What's Still Broken
 
-The pre-improvement model **fails accuracy, worst-class F1, and macro F1** on all three seeds. The confidence to deploy it as a multi-label classifier is therefore low. The single setting change above tests one limited hypothesis; future work could examine annotation ambiguity, additional label examples, or learning-rate choice **only as separate experiments**. The staff-label agreement exercise remains outstanding and will require human involvement and staff answer-key access.
+The measured six-epoch change improved average accuracy and macro F1 but **failed** the 70% accuracy, 0.55 worst-class F1, and 0.60 macro-F1 criteria across all three seeds. Most importantly, `reaction` F1 remained **zero** on all three runs. For this class there are only 32 training-data examples in the original 200-post dataset (16%), and its boundary with short `hot_take` or event-driven `discussion_question` content may require checking more examples and annotation consistency. These are hypotheses, not established causes.
 
-**The gap between what I meant my labels to capture and what the model learned:** I designed four categories to distinguish supported basketball arguments, unsupported strong claims, event reactions, and questions. On the original test set, the model treated almost everything as a question, losing all meaningful separation between the other three categories.
+**Further work if allowed in a later experiment:** Independently review `reaction` examples and edge cases against the original taxonomy, increase clearly labeled examples after a quality audit, or test a separate training hyperparameter in isolation. I have **not** made those extra changes in this unit because the assignment calls for one measured improvement.
 
-**AI assistance disclosure for Unit 6:** AI helped check the environment, set up reproducible execution, and assemble this factual report using generated measurement files; it did not independently create a human gold-label agreement set or invent model performance. The baseline and three-seed evaluations ran on GitHub Actions Linux CPU rather than the originally recommended local Windows environment.
+**Still required from a human and the TF:** Label the 30 running-forum posts independently using `data/staff_taxonomy.md`, then obtain `data/staff_labels.csv`, run `agreement.py`, and adjudicate every disagreement with a defensible reason. Until then, human agreement is **not measured** and no grading claim about it is warranted.
+
+**The gap between my intended labels and the model's learned behavior:** I intended to distinguish four basketball discussion functions, including fast emotional reactions. After more training the model partially learned evidence-based analysis and unsupported takes, but still treated real `reaction` posts as either arguments or questions, so the intended reaction boundary remains unlearned.
+
+**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, and write up the measured tables. It did **not** create an independent human annotation or claim to have adjudicated staff disagreements. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
 
 ---
 
