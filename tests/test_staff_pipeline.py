@@ -1,6 +1,7 @@
 """Self-contained tests with synthetic labels; no staff answer key or student labels."""
 import csv
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -50,6 +51,14 @@ class TestStaffAnnotationWorkflow(unittest.TestCase):
                 label = LABELS[i % 3]
                 if mutate and i in {0, 29}: label = LABELS[(i+1) % 3]
                 w.writerow({"id":post["id"],"label":label})
+
+    def test_offline_browser_posts_are_exact_source_texts(self):
+        html=(SOURCE/"staff_annotation_helper.html").read_text(encoding="utf-8")
+        match=re.search(r"const posts = (\\[.*?\\]);", html, re.DOTALL)
+        self.assertIsNotNone(match, "Embedded offline posts array missing")
+        payload=json.loads(match.group(1))
+        self.assertEqual([p["id"] for p in payload],[p["id"] for p in self.posts])
+        self.assertEqual([p["text"] for p in payload],[p["text"] for p in self.posts])
 
     def test_missing_human_is_a_blocker_not_fake_results(self):
         r=self.execute()
