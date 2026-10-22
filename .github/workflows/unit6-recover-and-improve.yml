@@ -1,0 +1,90 @@
+name: Recover measured Unit 6 results and test single improvement
+
+on:
+  push:
+    paths:
+      - .github/workflows/unit6-recover-and-improve.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  recovery_and_improvement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONUNBUFFERED: "1"
+      OMP_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Recover original measured artifacts without recomputing
+        run: |
+          gh run download 39788414461 -R "$GITHUB_REPOSITORY" -n unit6-measured-results -D .
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          b=json.loads(Path("baseline_results.json").read_text())
+          s=json.loads(Path("results_three_seeds_before.json").read_text())
+          assert b["held_out"] and b["n"] == 30 and b["used_definitions"]
+          assert [r["seed"] for r in s] == [42, 7, 2024]
+          print("Baseline:", b["scores"]["accuracy"])
+          print("Before:", [(r["seed"],r["accuracy"],r["f1_macro"]) for r in s])
+          PY
+      - name: Install dependencies for one-change improvement experiment
+        run: |
+          python -m pip install --no-cache-dir -r requirements.txt
+      - name: Measure only one change -- epochs 3 to 6
+        id: improvement
+        run: python scripts/run_unit6.py --run-label after --epochs 6
+        continue-on-error: true
+      - name: Verify and display actual measured files
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for p in (Path("baseline_results.json"),Path("results_three_seeds_before.json"),Path("results_three_seeds_after.json")):
+              if not p.exists():
+                  print(p, "NOT GENERATED")
+                  continue
+              o=json.loads(p.read_text(encoding="utf-8"))
+              print(p,"valid JSON; entries",len(o))
+          PY
+      - name: Upload verified measurement artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit6-before-and-after-measured
+          path: |
+            baseline_results.json
+            results_three_seeds_before.json
+            results_three_seeds_after.json
+          if-no-files-found: warn
+      - name: Commit recovered baseline, before, and if available after measurement
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in baseline_results.json results_three_seeds_before.json results_three_seeds_after.json; do
+            if test -f "$f"; then git add "$f"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "test: preserve authentic Unit 6 baseline, three seeds and measured improvement"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          else
+            echo "No measurement changes"
+          fi
+      - name: Fail if after-test incomplete
+        if: steps.improvement.outcome == 'failure'
+        run: |
+          echo "Improvement test did not complete; before-run artifacts were still preserved."
+          exit 1
