@@ -193,179 +193,111 @@ The held-out test split has only 6 `analysis` examples and 5 `reaction` examples
 
 ## Baseline vs. Trained
 
-<!-- Both models on the same posts. `python baseline.py --trained results.json`
-     prints this table for you. -->
+The first zero-shot run (`facebook/bart-large-mnli`) and the original trained model both used the **same 30 held-out posts** from `test_split.csv`. The results below are real measurements from GitHub Actions on Linux CPU; the original Unit 5 run was on Windows CPU.
 
-| Measure | Baseline | Trained | Difference |
-|---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+| Measure | Baseline | Trained (seed 42) | Trained − baseline |
+|---|---:|---:|---:|
+| Overall accuracy | 0.1333 | 0.3667 | +0.2334 |
+| Macro F1 | 0.0588 | 0.1341 | +0.0753 |
+| F1 — `analysis` | 0.2353 | 0.0000 | −0.2353 |
+| F1 — `hot_take` | 0.0000 | 0.0000 | 0.0000 |
+| F1 — `reaction` | 0.0000 | 0.0000 | 0.0000 |
+| F1 — `discussion_question` | 0.0000 | 0.5366 | +0.5366 |
 
-**What I predicted before I looked (recorded before running the Unit 6 baseline):** Given the original fine-tuned model assigned all 30 held-out posts to `discussion_question`, I predict the definition-guided zero-shot baseline may exceed its 36.7% accuracy and improve F1 on the three other labels. A baseline win would suggest the current training run has not yet added value; the actual outcome must be measured on the same `test_split.csv`.
+**What I predicted before I looked (committed before the baseline ran):** Given the original fine-tuned model assigned all 30 held-out posts to `discussion_question`, I predicted that the definition-guided zero-shot baseline might exceed its 36.7% accuracy and improve F1 on the other labels.
 
-<!-- Prediction written before inspecting baseline_results.json. -->
+**What the gap actually means:** My prediction was **wrong**: baseline accuracy was 13.3%, not above 36.7%. Fine-tuning improved overall accuracy, but largely by favoring the most frequent test label: it recognized none of the `analysis` or `reaction` examples. Conversely, the baseline recognized some `analysis` posts but failed the other labels. **Neither result supports a reliable four-label classifier.**
 
-**What the gap actually means:**
-<!-- If the baseline matched your trained model, your fine-tuning added
-     nothing — and that is a real finding, not a failure. Say it plainly. -->
-
-
+Data: `baseline_results.json` (measured), `results.json` (original trained model), `test_split.csv` (shared held-out set).
 
 ---
 
 ## Run Log — Before
 
-<!-- Five criteria across three seeds. The notebook's section 6 prints the
-     spread table; the Target and Verdict columns are yours. -->
+Measured by running the original notebook's training functions at seeds **42, 7, 2024**, without changing the original data, taxonomy, or training settings (3 epochs, learning rate 2e-5, batch 16). Each seed retrains and evaluates on its own stratified split. Execution: GitHub-hosted Linux CPU, torch 2.14.1+cu130.
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+|---|---|---:|---:|---:|---|
+| 1. Overall accuracy | ≥ 0.70 | 0.367 | 0.433 | 0.367 | **MISSED** |
+| 2. Minimum per-label F1 | ≥ 0.55 | 0.000 | 0.000 | 0.000 | **MISSED** |
+| 3. Macro F1 | ≥ 0.60 | 0.134 | 0.236 | 0.134 | **MISSED** |
+| 4. Largest class share | ≤ 45% | 36.5% | 36.5% | 36.5% | **MET** |
+| 5. Independent annotator agreement | ≥ 80% | Not measured | Not measured | Not measured | **PENDING** |
 
-### Confusion matrix
+The accuracy spread is 0.067 (6.7 percentage points); **consistently poor performance** is not a sign the classifier is good. Mean accuracy is 0.389; mean macro F1 is 0.168. See `results_three_seeds_before.json` for measured details.
 
-<!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
-     An image of a matrix earns nothing. -->
+### Confusion matrix — seed 42, before improvement
 
-| true \ predicted |  |  |  |
-|---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+Rows are true labels and columns predicted labels.
 
-**My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
+| true \\ predicted | analysis | hot_take | reaction | discussion_question |
+|---|---:|---:|---:|---:|
+| **analysis** | 0 | 0 | 0 | 6 |
+| **hot_take** | 0 | 0 | 0 | 8 |
+| **reaction** | 0 | 0 | 0 | 5 |
+| **discussion_question** | 0 | 0 | 0 | 11 |
 
-
+**Biggest off-diagonal cell:** Eight genuine `hot_take` posts were classified as `discussion_question`; zero true `discussion_question` posts were called `hot_take`. This is **one-way class collapse**, not just a symmetric borderline confusion. Seeds 42 and 2024 predict `discussion_question` for every post; seed 7 recognizes two `hot_take` posts.
 
 ---
 
 ## Verdicts and Diagnoses
 
-<!-- MET or MISSED against LAST UNIT's target. The target has to hold across
-     all three seeds, not turn up sometimes. -->
-
-| # | Criterion | Target | Verdict | How I decided |
+| # | Criterion | Target | Verdict | Evidence / interpretation |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 70% in all three | **MISSED** | 36.7%, 43.3%, 36.7%; none reaches target |
+| 2 | Every label F1 | ≥ 0.55 in all three | **MISSED** | Minimum F1 is zero on every split; `analysis` and `reaction` never recognized |
+| 3 | Macro F1 | ≥ 0.60 in all three | **MISSED** | 0.134, 0.236, 0.134 |
+| 4 | Dataset balance | Largest label ≤ 45% | **MET** | `discussion_question` is 73/200 = 36.5% |
+| 5 | Human labeling consistency | ≥ 80% agreement | **PENDING** | Requires genuinely independent annotations and staff reference answers; not guessed |
 
-**Diagnoses**
+**Diagnoses:** The model **collapses toward `discussion_question`**, the plurality label (36.5% of training data). An imbalanced prediction pattern despite a reasonably balanced training set suggests an **under-learning, representation, or annotation quality problem**, but the current scores do **not establish** which mechanism is responsible. The baseline is even worse (13.3%), confirming that zero-shot prompting with these definitions is not an adequate substitute. The separate staff annotation task may expose inconsistency in how written definitions were applied, but **its reference answers have not been obtained**, so do not claim to have verified a labeling cause yet.
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
-
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
-
-
+The original 30-post test set has only six `analysis` and five `reaction` examples; their F1 is inherently sensitive to small changes, though zero across all three seeds remains a serious failure.
 
 ---
 
 ## Agreement Report
 
-<!-- Your rate against the staff set, and every disagreement adjudicated.
+**Status: awaiting independent human annotations and teaching-fellow reference labels.**
 
-     Remember you labelled these 30 under the STAFF taxonomy in
-     data/staff_taxonomy.md, not your own — so every argument below is made
-     from those definitions and those decision rules. -->
+I have prepared `staff_annotation_worksheet.csv` with the exact 30 texts and empty labels. This is **not yet** `my_staff_labels.csv` and does **not** represent independent human labeling. Apply the three labels in `data/staff_taxonomy.md` yourself, save the finished `my_staff_labels.csv`, and only then request `data/staff_labels.csv` from the teaching fellow. Run `python agreement.py` and document **every** disagreement with both labels, a written conclusion and reasoning. Nothing here has been fabricated.
 
-**Agreement rate:** ___ / 30 = ___%
-
-<!-- Nobody grades this number. A 60% who argues every disagreement from the
-     stated rules beats a 95% who wrote "staff was right" nine times. Several
-     of the 30 were chosen because they're genuinely ambiguous — you should be
-     winning some of these. -->
-
-**Disagreements**
-
-<!-- Three lines each: the post, both labels, and who you think is right and
-     why — grounded in the staff definitions you were both applying.
-
-     Then sort each into one of three piles:
-       (a) the rule covered it and I applied it loosely → a consistency problem
-       (b) the rule genuinely doesn't say               → a gap in the definitions
-       (c) the rule is ambiguous here and my reading is defensible → argue it.
-           This is a legitimate win.
-
-     Pile (a) is the one that matters most for your diagnosis: if you applied a
-     written rule two different ways on 30 posts, that is direct evidence about
-     what you did across your own 200. -->
-
-**1.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
-
-**What the pattern in my disagreements tells me:**
-
-
+**Measurement caveat:** The staff exercise uses three labels from a fictional running forum, while the user's Unit 5 classifier uses four labels from NBA posts. Therefore staff agreement directly measures how reliably an external written taxonomy is interpreted; it is **not identical** to independently relabeling the original NBA four-label corpus. The precommitted ≥80% NBA consistency criterion is not established by this staff set alone.
 
 ---
 
 ## The Improvement
 
-**What I changed:**
+**Single change selected from the before-run diagnosis:** Increase `EPOCHS` from **3 to 6** for the *same* DistilBERT fine-tuning setup. Keep training examples, labels, token length (128), learning rate (2e-5), batch size (16), and seeds (42, 7, 2024) fixed. The before-run collapse suggests the classifier may not have learned decision boundaries sufficiently from the short fine-tune, making epochs a plausible, testable **single-variable hypothesis**, not a proven solution.
 
-**Which diagnosis pointed at it:**
+**Why this is an experiment:** If more epochs still produce class collapse, the results weaken the under-training explanation and shift attention toward data ambiguity or insufficient examples; worse results are also valid evidence.
 
 ### Run Log — After
 
+**Pending measured six-epoch run.** Do not copy before values here or invent improved scores.
+
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Accuracy | ≥ 0.70 | pending | pending | pending | Pending |
+| 2. Minimum label F1 | ≥ 0.55 | pending | pending | pending | Pending |
+| 3. Macro F1 | ≥ 0.60 | pending | pending | pending | Pending |
+| 4. Class share | ≤ 45% | 36.5% | 36.5% | 36.5% | MET |
+| 5. Human consistency | ≥ 80% | pending | pending | pending | Pending |
 
-**Did it help, and how do I know:**
-
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
-
-
+**Did it help?** To be determined only after `results_three_seeds_after.json` is generated and verified.
 
 ---
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+The pre-improvement model **fails accuracy, worst-class F1, and macro F1** on all three seeds. The confidence to deploy it as a multi-label classifier is therefore low. The single setting change above tests one limited hypothesis; future work could examine annotation ambiguity, additional label examples, or learning-rate choice **only as separate experiments**. The staff-label agreement exercise remains outstanding and will require human involvement and staff answer-key access.
 
+**The gap between what I meant my labels to capture and what the model learned:** I designed four categories to distinguish supported basketball arguments, unsupported strong claims, event reactions, and questions. On the original test set, the model treated almost everything as a question, losing all meaningful separation between the other three categories.
 
+**AI assistance disclosure for Unit 6:** AI helped check the environment, set up reproducible execution, and assemble this factual report using generated measurement files; it did not independently create a human gold-label agreement set or invent model performance. The baseline and three-seed evaluations ran on GitHub Actions Linux CPU rather than the originally recommended local Windows environment.
 
-**The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
-
-
+---
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
