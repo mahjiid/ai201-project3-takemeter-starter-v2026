@@ -54,9 +54,7 @@ class TestStaffAnnotationWorkflow(unittest.TestCase):
 
     def test_offline_browser_posts_are_exact_source_texts(self):
         html=(SOURCE/"staff_annotation_helper.html").read_text(encoding="utf-8")
-        match=re.search(r"const posts = (\\[.*?\\]);", html, re.DOTALL)
-        self.assertIsNotNone(match, "Embedded offline posts array missing")
-        payload=json.loads(match.group(1))
+        payload=json.loads(html.partition("const posts = ")[2].splitlines()[0].removesuffix(";"))
         self.assertEqual([p["id"] for p in payload],[p["id"] for p in self.posts])
         self.assertEqual([p["text"] for p in payload],[p["text"] for p in self.posts])
 
