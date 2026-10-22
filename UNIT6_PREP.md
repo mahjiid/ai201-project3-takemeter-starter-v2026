@@ -43,7 +43,7 @@ On ZairPlanet, the repository lives at:
 - The original evaluation workflow showed a red badge because of a Git push race. The recovery workflow committed all three output files successfully, but itself reported a non-critical post-job pip-cache cleanup error. The later lightweight verification passed.
 - The local Windows repository is synchronized; a virtual environment exists, but heavy PyTorch/model dependencies were **not successfully installed** locally because downloads were slow. Do not claim the local model stack is operational. Staff-annotation validator works using only standard-library Python.
 - The `scripts/run_unit6.py` runner is available for repeatable future evaluation. Avoid re-running the single improvement unless needed for evidence; the assignment calls for exactly one measured change.
-- Five synthetic-only tests in `tests/test_staff_pipeline.py` passed locally; they check that the pipeline refuses missing/invalid annotations and does not fabricate agreement.
+- Six synthetic-only and source-integrity tests in `tests/test_staff_pipeline.py` passed locally; they check that the pipeline refuses missing/invalid annotations and does not fabricate agreement.
 - No secrets, actual student records, or staff reference answers should be committed. Staff-provided labels are ignored by `.gitignore`.
 
 ## Completion gate
