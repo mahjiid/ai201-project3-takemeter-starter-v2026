@@ -1,0 +1,83 @@
+name: Unit 6 TakeMeter reproducible evaluation
+
+on:
+  push:
+    paths:
+      - .github/workflows/unit6-evaluation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    env:
+      HF_HUB_DISABLE_TELEMETRY: "1"
+      TOKENIZERS_PARALLELISM: "false"
+      PYTHONUNBUFFERED: "1"
+      OMP_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install evaluation dependencies
+        run: |
+          python -m pip install --no-cache-dir -r requirements.txt
+          python -m pip list --format=freeze | grep -E "torch==|transformers==|accelerate==|datasets==|scikit-learn==" || true
+      - name: Smoke-test environment
+        run: python test.py
+        continue-on-error: true
+      - name: Run held-out zero-shot baseline
+        id: baseline
+        run: python baseline.py --trained results.json
+        continue-on-error: true
+      - name: Run existing notebook's three-seed training/evaluation
+        id: three_seeds
+        run: python scripts/run_unit6.py --run-label before
+        continue-on-error: true
+      - name: Verify actual result files
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for file in ("baseline_results.json", "results_three_seeds_before.json"):
+              p = Path(file)
+              if p.exists():
+                  x = json.loads(p.read_text())
+                  print(file, "present", p.stat().st_size, "bytes; type", type(x).__name__)
+              else:
+                  print(file, "NOT PRESENT")
+          PY
+      - name: Upload measured result files
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit6-measured-results
+          path: |
+            baseline_results.json
+            results_three_seeds_before.json
+          if-no-files-found: warn
+      - name: Commit only generated measurement files to this repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in baseline_results.json results_three_seeds_before.json; do
+            if test -f "$f"; then git add "$f"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "test: record measured Unit 6 baseline and three-seed evaluations"
+            git push origin HEAD:main
+          else
+            echo "No new measured result files to commit."
+          fi
+      - name: Report incomplete evaluation honestly
+        if: steps.baseline.outcome == 'failure' || steps.three_seeds.outcome == 'failure'
+        run: |
+          echo "At least one actual evaluation failed; inspect job logs. Never treat this as completed."
+          exit 1
