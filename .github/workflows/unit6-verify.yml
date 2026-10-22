@@ -1,0 +1,51 @@
+name: Verify Unit 6 measured artifacts and handoff
+
+on:
+  push:
+    paths:
+      - .github/workflows/unit6-verify.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify three real results files, same seeds and source set
+        run: |
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+          baseline=json.loads(Path('baseline_results.json').read_text())
+          before=json.loads(Path('results_three_seeds_before.json').read_text())
+          after=json.loads(Path('results_three_seeds_after.json').read_text())
+          assert baseline['held_out'] is True and baseline['used_definitions'] is True
+          assert baseline['n'] == 30
+          assert [x['seed'] for x in before] == [42,7,2024]
+          assert [x['seed'] for x in after] == [42,7,2024]
+          labels=['analysis','hot_take','reaction','discussion_question']
+          for run in [*before,*after]:
+              assert run['n_test']==30
+              assert 0 <= run['accuracy'] <= 1 and 0 <= run['f1_macro'] <= 1
+              assert list(run['per_label'])==labels
+              assert all(0 <= run['per_label'][k]['f1'] <= 1 for k in labels)
+          readme=Path('README.md').read_text(encoding='utf-8')
+          for title in ('## Baseline vs. Trained','## Run Log — Before','## Verdicts and Diagnoses','## Agreement Report','## The Improvement','### Run Log — After',"## What's Still Broken"):
+              assert title in readme, title
+          with Path('staff_annotation_worksheet.csv').open(newline='',encoding='utf-8') as f:
+              posts=list(csv.DictReader(f))
+          assert len(posts)==30
+          assert all(post['text'] for post in posts)
+          assert all(not post['label'] for post in posts), 'The worksheet must stay unlabeled until independent human work'
+          print('Verified genuine baseline, three before seeds, three after seeds, and README')
+          print('Original baseline accuracy:', baseline['scores']['accuracy'])
+          print('Before accuracy:',[round(r['accuracy'],4) for r in before])
+          print('After accuracy:', [round(r['accuracy'],4) for r in after])
+          print('Human staff agreement still pending; no invented values')
+          PY
