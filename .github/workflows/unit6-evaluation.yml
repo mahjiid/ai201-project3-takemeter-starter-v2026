@@ -1,9 +1,6 @@
 name: Unit 6 TakeMeter reproducible evaluation
 
 on:
-  push:
-    paths:
-      - .github/workflows/unit6-evaluation.yml
   workflow_dispatch:
 
 permissions:
@@ -26,7 +23,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: pip
       - name: Install evaluation dependencies
         run: |
           python -m pip install --no-cache-dir -r requirements.txt
