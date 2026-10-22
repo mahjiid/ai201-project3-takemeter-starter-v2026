@@ -203,9 +203,9 @@ The held-out test split has only 6 `analysis` examples and 5 `reaction` examples
 | F1 — `label_one` |  |  |  |
 | F1 — `label_two` |  |  |  |
 
-**What I predicted before I looked:**
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+**What I predicted before I looked (recorded before running the Unit 6 baseline):** Given the original fine-tuned model assigned all 30 held-out posts to `discussion_question`, I predict the definition-guided zero-shot baseline may exceed its 36.7% accuracy and improve F1 on the three other labels. A baseline win would suggest the current training run has not yet added value; the actual outcome must be measured on the same `test_split.csv`.
+
+<!-- Prediction written before inspecting baseline_results.json. -->
 
 **What the gap actually means:**
 <!-- If the baseline matched your trained model, your fine-tuning added
