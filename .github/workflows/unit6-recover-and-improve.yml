@@ -1,9 +1,6 @@
 name: Recover measured Unit 6 results and test single improvement
 
 on:
-  push:
-    paths:
-      - .github/workflows/unit6-recover-and-improve.yml
   workflow_dispatch:
 
 permissions:
@@ -26,7 +23,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: pip
       - name: Recover original measured artifacts without recomputing
         run: |
           gh run download 39788414461 -R "$GITHUB_REPOSITORY" -n unit6-measured-results -D .
