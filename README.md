@@ -312,7 +312,7 @@ All five actual `reaction` posts in this seed were misclassified: two as `analys
 
 ## What's Still Broken
 
-The measured six-epoch change improved average accuracy and macro F1 but **failed** the 70% accuracy, 0.55 worst-class F1, and 0.60 macro-F1 criteria across all three seeds. Most importantly, `reaction` F1 remained **zero** on all three runs. For this class there are only 32 training-data examples in the original 200-post dataset (16%), and its boundary with short `hot_take` or event-driven `discussion_question` content may require checking more examples and annotation consistency. These are hypotheses, not established causes.
+The measured six-epoch change improved average accuracy and macro F1 but **failed** the 70% accuracy, 0.55 worst-class F1, and 0.60 macro-F1 criteria across all three seeds. Most importantly, `reaction` F1 remained **zero** on all three runs. For this class there are only 32 labeled examples in the original 200-post dataset (16%), of which 22 were in the original training split, and its boundary with short `hot_take` or event-driven `discussion_question` content may require checking more examples and annotation consistency. These are hypotheses, not established causes.
 
 **Further work if allowed in a later experiment:** Independently review `reaction` examples and edge cases against the original taxonomy, increase clearly labeled examples after a quality audit, or test a separate training hyperparameter in isolation. I have **not** made those extra changes in this unit because the assignment calls for one measured improvement.
 
