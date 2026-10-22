@@ -261,7 +261,7 @@ The original 30-post test set has only six `analysis` and five `reaction` exampl
 
 **Status: awaiting independent human annotations and teaching-fellow reference labels.**
 
-I have prepared `staff_annotation_worksheet.csv` with the exact 30 texts and empty labels. This is **not yet** `my_staff_labels.csv` and does **not** represent independent human labeling. Apply the three labels in `data/staff_taxonomy.md` yourself, save the finished `my_staff_labels.csv`, and only then request `data/staff_labels.csv` from the teaching fellow. Run `python agreement.py` and document **every** disagreement with both labels, a written conclusion and reasoning. Nothing here has been fabricated.
+I have prepared `staff_annotation_helper.html`, an offline 30-post interface with the staff taxonomy and a download button that exports `my_staff_labels.csv` only after all 30 human choices are made. The original blank `staff_annotation_worksheet.csv` remains available. Neither file represents completed independent human labeling. Apply the three labels in `data/staff_taxonomy.md` yourself, save the finished `my_staff_labels.csv`, and only then request `data/staff_labels.csv` from the teaching fellow. Run `python scripts/validate_and_prepare_agreement.py` (no third-party packages required; it writes `agreement_results.json` and `staff_adjudications.md` once the TF file is present), optionally cross-check with `python agreement.py`, and document **every** disagreement with both labels, a written conclusion and reasoning. Nothing here has been fabricated.
 
 **Measurement caveat:** The staff exercise uses three labels from a fictional running forum, while the user's Unit 5 classifier uses four labels from NBA posts. Therefore staff agreement directly measures how reliably an external written taxonomy is interpreted; it is **not identical** to independently relabeling the original NBA four-label corpus. The precommitted ≥80% NBA consistency criterion is not established by this staff set alone.
 
@@ -320,7 +320,7 @@ The measured six-epoch change improved average accuracy and macro F1 but **faile
 
 **The gap between my intended labels and the model's learned behavior:** I intended to distinguish four basketball discussion functions, including fast emotional reactions. After more training the model partially learned evidence-based analysis and unsupported takes, but still treated real `reaction` posts as either arguments or questions, so the intended reaction boundary remains unlearned.
 
-**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, and write up the measured tables. It did **not** create an independent human annotation or claim to have adjudicated staff disagreements. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
+**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, build the independent annotation interface and validator, and write up the measured tables. It did **not** create an independent human annotation or claim to have adjudicated staff disagreements. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
 
 ---
 
