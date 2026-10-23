@@ -222,7 +222,7 @@ Measured by running the original notebook's training functions at seeds **42, 7,
 | 2. Minimum per-label F1 | ≥ 0.55 | 0.000 | 0.000 | 0.000 | **MISSED** |
 | 3. Macro F1 | ≥ 0.60 | 0.134 | 0.236 | 0.134 | **MISSED** |
 | 4. Largest class share | ≤ 45% | 36.5% | 36.5% | 36.5% | **MET** |
-| 5. Independent annotator agreement | ≥ 80% | Not measured | Not measured | Not measured | **PENDING** |
+| 5. Independent annotator agreement | ≥ 80% | 56.7% staff-set proxy | N/A (one common set) | N/A | **MISSED on proxy; original taxonomy unmeasured** |
 
 The accuracy spread is 0.067 (6.7 percentage points); **consistently poor performance** is not a sign the classifier is good. Mean accuracy is 0.389; mean macro F1 is 0.168. See `results_three_seeds_before.json` for measured details.
 
@@ -249,9 +249,9 @@ Rows are true labels and columns predicted labels.
 | 2 | Every label F1 | ≥ 0.55 in all three | **MISSED** | Minimum F1 is zero on every split; `analysis` and `reaction` never recognized |
 | 3 | Macro F1 | ≥ 0.60 in all three | **MISSED** | 0.134, 0.236, 0.134 |
 | 4 | Dataset balance | Largest label ≤ 45% | **MET** | `discussion_question` is 73/200 = 36.5% |
-| 5 | Human labeling consistency | ≥ 80% agreement | **PENDING** | Requires genuinely independent annotations and staff reference answers; not guessed |
+| 5 | Human labeling consistency | ≥ 80% agreement | **MISSED on staff proxy; original in-domain check unmeasured** | Agreement was 17/30 = 56.7% on the 3-label staff running-forum task; the original 4-label basketball taxonomy was not independently relabeled |
 
-**Diagnoses:** The model **collapses toward `discussion_question`**, the plurality label (36.5% of training data). An imbalanced prediction pattern despite a reasonably balanced training set suggests an **under-learning, representation, or annotation quality problem**, but the current scores do **not establish** which mechanism is responsible. The baseline is even worse (13.3%), confirming that zero-shot prompting with these definitions is not an adequate substitute. The separate staff annotation task may expose inconsistency in how written definitions were applied, but **its reference answers have not been obtained**, so do not claim to have verified a labeling cause yet.
+**Diagnoses:** The model **collapses toward `discussion_question`**, the plurality label (36.5% of training data). An imbalanced prediction pattern despite a reasonably balanced training set suggests an **under-learning, representation, or annotation quality problem**, but the current scores do **not establish** which mechanism is responsible. The baseline is even worse (13.3%), confirming that zero-shot prompting with these definitions is not an adequate substitute. The staff annotation task now demonstrates 13 concrete interpretation disagreements against a distinct three-label running-forum taxonomy. The mistakes around numerical evidence versus unsupported opinion and personal reaction justify a **label-quality risk hypothesis**; because these are not the NBA posts, they do not prove an in-domain annotation fault.
 
 The original 30-post test set has only six `analysis` and five `reaction` examples; their F1 is inherently sensitive to small changes, though zero across all three seeds remains a serious failure.
 
@@ -259,24 +259,148 @@ The original 30-post test set has only six `analysis` and five `reaction` exampl
 
 ## Agreement Report
 
-**Reference received from CodePath on October 23, 2026** via email from Margaret Fero (CodePath Support). I had already saved and committed my independent annotation file `my_staff_labels.csv` before accessing it. The original 30 texts and all selected labels were kept unchanged. The staff reference file is stored locally as `data/staff_labels.csv` and excluded from public Git tracking.
+**Independent annotation and reference verification.** The student's original 30 running-forum labels were saved in `my_staff_labels.csv` and committed before the official reference was received from CodePath Support on October 23, 2026. The texts and original labels remain unchanged; the official `data/staff_labels.csv` stays only on the local computer and is deliberately Git-ignored.
 
-| Measure | Result |
+| Check | Verified result |
 |---|---:|
-| Compared posts | 30 |
-| Agreed | 17 |
-| Disagreed | 13 |
-| **Agreement rate** | **56.7%** |
-| Staff labels vs. my saved labels | `agreement_results.json` |
-| Original label selections | `my_staff_labels.csv` |
+| Original posts compared | 30 |
+| Exact matches | 17 |
+| Disagreements | 13 |
+| **Raw label agreement** | **17/30 = 56.7%** |
+| Reference-linked measurements | [`agreement_results.json`](agreement_results.json) |
+| Full adjudication analysis | [`staff_adjudications.md`](staff_adjudications.md) |
 
-**Interpretation:** This result is below my precommitted 80% human consistency target **numerically**, but the staff exercise is in a *different three-label running-forum taxonomy*, while my original project uses four basketball categories. I therefore cannot claim this is a direct measurement of consistency on my original 200 NBA annotations. The graded Unit 6 skill is independent adjudication and diagnosis, not achieving a particular score.
+**Verdict:** The 56.7% rate is below the 80% consistency target from Unit 5 on the *available staff exercise*, but it is **not a direct test of the original four-label basketball taxonomy**. The staff exercise uses `analysis`, `hot_take`, and `reaction` on 30 running-forum posts, rather than the basketball dataset's four-way labeling. It is a strong diagnostic of how a different written rule set was applied, not a proven 56.7% reproducibility rate for the original basketball annotations. The Unit 5 in-domain consistency criterion therefore remains *not directly measured*. The course explicitly says the staff-set agreement rate itself is not graded; the reasoned adjudication is.
 
-**Each of the 13 actual disagreements has an evidence-based proposed explanation:** See [`staff_adjudications.md`](staff_adjudications.md), which reproduces the exact post, my original label, CodePath's label, a proposed call, the applicable taxonomy decision rule, and the reasoning. This is an **AI-assisted review draft** that still requires me to approve or revise each judgment personally before I treat it as my final adjudication. It would be misleading to claim that these draft arguments are already my approved decisions.
+### All 13 disagreement adjudications
 
-**Tentative pattern diagnosis:** I overused `analysis` for confident claims that merely contain numbers, and overused `hot_take`/`analysis` when a writer was reporting their immediate personal experience. Several data-backed comparisons were initially mislabeled `reaction` or `hot_take`. For `sp_003` the central issue remains genuinely debatable: the timeline and result changes are checkable, but the asserted **turnout** mechanism is not separately demonstrated. These disagreements expose taxonomy-application risks; they do not, by themselves, prove the cause of the distinct basketball classifier's low F1.
+The following is an **AI-assisted, rule-grounded interpretation** of the 13 mismatches for student review. It does **not** modify the student's independent initial choices or claim these reasons were written unaided. Unlike unconditional deference, case `sp_003` defends the initial label with a substantive explanation; the other cases explain why the reference better fits the taxonomy. Rule 1 asks whether a checkable fact *carries* an argument; Rule 2 separates a general claim from an immediate personal response; Rule 3 says recency and numbers don't replace load-bearing evidence; Rule 4 breaks defensible ties.
 
-**Final submission gate:** Review, amend and approve each of the 13 proposed adjudications in my own words, then copy the finalized reasoning into this section or submit it as an explicitly linked adjudication document. Do not publish the unabridged staff answer key.
+#### 1. sp_003 — hot_take versus analysis
+
+> The club championship scoring changed in 2019 from top-6 to top-10. Since then our B team has finished above the A team twice. That's not depth improving, it's the scoring rewarding turnout.
+
+**Original label:** `hot_take` · **Staff label:** `analysis` · **Preferred interpretation:** `hot_take` (defend my initial reading; staff's `analysis` also plausible)    
+**Diagnosis group:** (c) defensible alternate interpretation.
+
+The changed scoring rule (2019) and two B-team wins are checkable, so staff has a credible analysis reading. Yet the final claim attributes those wins specifically to turnout, while the post supplies no turnout counts or comparison of athlete depth. Under Rule 1, one may argue the facts establish a changed outcome but do not actually carry the asserted turnout explanation. The **hot_take** classification is defensible for this causal leap, although the staff's **analysis** classification is also reasonable under the broad 'checkable fact' wording. The original choice is retained as a documented, arguable disagreement instead of defaulting to the answer key.
+
+#### 2. sp_004 — reaction versus analysis
+
+> Everyone blames the hill at 18 miles. I split the field into people who ran the first half under 1:45 and over, and the slowdown after 18 was almost identical for both groups. If the hill were the problem the fast starters would fall apart harder.
+
+**Original label:** `reaction` · **Staff label:** `analysis` · **Preferred interpretation:** `analysis` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+Dividing runners by opening-half time tests a prediction about slowdown after mile 18. The nearly identical slowdowns in both groups are the evidence used to challenge the hill explanation. This is a structured, checkable inference under Rule 1, not a recent feeling or first-person race report.
+
+#### 3. sp_008 — reaction versus analysis
+
+> Went back through the club results going back to 2012. Every single year the number of people who enter the spring marathon and don't start it sits between 18 and 23 percent. It's not a bad-luck year, it's the base rate.
+
+**Original label:** `reaction` · **Staff label:** `analysis` · **Preferred interpretation:** `analysis` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+A repeated 18–23% DNS rate over results dating to 2012 directly supports the argument that the current year is not an unusual outlier. The historical range is load-bearing evidence; the post makes no immediate personal-response claim.
+
+#### 4. sp_009 — hot_take versus analysis
+
+> The 10K route was remeasured in 2021 and came out 60 metres long. Everyone comparing PBs from before and after that is comparing two different races, which is about 12 seconds at club pace.
+
+**Original label:** `hot_take` · **Staff label:** `analysis` · **Preferred interpretation:** `analysis` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+The 2021 remeasurement, 60-metre distance difference, and estimated 12-second effect make a specific comparison of pre/post-2021 personal bests. These numbers carry the claim that the performances aren't directly comparable. The assertion is supported rather than a naked hot_take.
+
+#### 5. sp_011 — reaction versus hot_take
+
+> Anyone who races more than once a month isn't training, they're just collecting medals.
+
+**Original label:** `reaction` · **Staff label:** `hot_take` · **Preferred interpretation:** `hot_take` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+'Anyone who races more than once a month' makes a broad judgment about other runners without support. It doesn't say what just happened to the writer or describe their present emotional response, as Rule 2 requires for reaction.
+
+#### 6. sp_012 — analysis versus hot_take
+
+> Heart rate zones are astrology for runners.
+
+**Original label:** `analysis` · **Staff label:** `hot_take` · **Preferred interpretation:** `hot_take` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+Calling heart-rate zones 'astrology' is a witty analogy, but no measurement, quoted evidence, or concrete comparison carries an argument. Rule 1 does not count a metaphor as checkable support.
+
+#### 7. sp_016 — analysis versus hot_take
+
+> If you need a gel before 90 minutes you have a fuelling problem, not an energy problem.
+
+**Original label:** `analysis` · **Staff label:** `hot_take` · **Preferred interpretation:** `hot_take` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+Ninety minutes is a numerical cutoff, not a measured result establishing that needing a gel proves a fuelling problem. The prescription assumes the relationship it should demonstrate. By Rule 1, a number by itself doesn't turn a claim into analysis.
+
+#### 8. sp_018 — analysis versus hot_take
+
+> Track sessions are wasted on anyone running slower than 8 minute miles. You'd get more out of just running more.
+
+**Original label:** `analysis` · **Staff label:** `hot_take` · **Preferred interpretation:** `hot_take` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+Eight-minute miles sounds specific, but the author provides no test, sample, or evidence that track sessions are wasted below that pace. Both 'wasted' and 'you'd get more from mileage' are unsupported general claims.
+
+#### 9. sp_020 — reaction versus hot_take
+
+> Every injury thread on this forum is the same injury and the same three replies.
+
+**Original label:** `reaction` · **Staff label:** `hot_take` · **Preferred interpretation:** `hot_take` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+'Every injury thread' makes a sweeping generalization about forum content. The author does not give thread counts or concrete checks, nor describe a just-happened personal experience. The repetitive tone may express frustration, but Rule 2 puts general unsupported claims under hot_take.
+
+#### 10. sp_023 — hot_take versus reaction
+
+> First run back after eight weeks out. Two miles, slower than my warm-up used to be, and I don't care even slightly.
+
+**Original label:** `hot_take` · **Staff label:** `reaction` · **Preferred interpretation:** `reaction` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+The speaker reports their first run back after eight weeks and how they feel about its slow two-mile distance. The times and distances provide context for that personal moment; they aren't used to argue a wider claim. Rule 2 favors reaction.
+
+#### 11. sp_025 — analysis versus reaction
+
+> Blew up at 20 with the pace band still in my hand like it was going to help. Rough one.
+
+**Original label:** `analysis` · **Staff label:** `reaction` · **Preferred interpretation:** `reaction` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+Blowing up at mile 20 with a pace band is an immediate lived experience followed by 'Rough one.' The numerical mile is part of the story, not a fact used to support an analysis. Rule 3 says evidence must carry an argument, which is absent.
+
+#### 12. sp_027 — hot_take versus reaction
+
+> Wind was so bad on the out section I was leaning at about 20 degrees. Coming back felt like cheating.
+
+**Original label:** `hot_take` · **Staff label:** `reaction` · **Preferred interpretation:** `reaction` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+The 'about 20 degrees' detail conveys how forceful the wind felt during the writer's run. The phrase 'coming back felt like cheating' signals experience and feeling, not a generalized theory about wind. Rule 2 makes reaction the clearer choice.
+
+#### 13. sp_028 — hot_take versus reaction
+
+> Third DNF this year. I don't really want to talk about it, just wanted to put it somewhere.
+
+**Original label:** `hot_take` · **Staff label:** `reaction` · **Preferred interpretation:** `reaction` (reference better supported)    
+**Diagnosis group:** (a) I applied the written rule loosely.
+
+'Third DNF this year' is countable, but the message is personal disclosure: the writer doesn't want to talk, just wants to express what happened. The count supports no argument; Rules 2 and 3 prioritize a reaction rather than hot_take or analysis.
+
+### What the disagreements diagnose
+
+The review exposes four recurring mistakes that can generalize to annotation work: (1) failing to recognize comparisons and historical statistics doing actual argumentative work (`sp_004`, `sp_008`, `sp_009`); (2) reading a numerical cutoff or vivid metaphor as if it were evidence (`sp_012`, `sp_016`, `sp_018`); (3) confusing unsupported general opinions with a current, personal emotional response (`sp_011`, `sp_020`); and (4) mistaking personal race experiences for analysis or general hot takes (`sp_023`, `sp_025`, `sp_027`, `sp_028`). The interesting counterexample is `sp_003`: the scoring-rule change and two finishes are checkable but do not independently show *turnout* caused the outcome, so `hot_take` has a defensible Rule 1 interpretation even though staff chose `analysis`.
+
+These are evidence of **taxonomy-boundary application difficulty**, not proof that the separate four-label basketball model's failures are caused by those same ambiguities. The measured model experiment showed that more training recovered some `analysis` and `hot_take` ability but left `reaction` F1 at zero; label consistency would be a worthwhile *separate* follow-up study, not an established cause here.
+
+**AI-assistance and student judgment:** The original post labels were independently selected before staff answers arrived. AI assisted with organizing, interpreting, and drafting the adjudication arguments above. The student should ensure the final positions reflect their understanding before submitting. No reference labels were substituted into the original independent file.
+
 ---
 
 ## The Improvement
@@ -295,7 +419,7 @@ The original 30-post test set has only six `analysis` and five `reaction` exampl
 | 2. Minimum label F1 | ≥ 0.55 | 0.000 | 0.000 | 0.000 | **MISSED** |
 | 3. Macro F1 | ≥ 0.60 | 0.416 | 0.349 | 0.375 | **MISSED** |
 | 4. Class share | ≤ 45% | 36.5% | 36.5% | 36.5% | **MET** |
-| 5. Human consistency | ≥ 80% | not measured | not measured | not measured | **PENDING** |
+| 5. Human consistency | ≥ 80% | 56.7% staff-set proxy | N/A | N/A | **MISSED on proxy; original taxonomy unmeasured** |
 
 #### Before versus after (three-seed results)
 
@@ -328,11 +452,11 @@ The measured six-epoch change improved average accuracy and macro F1 but **faile
 
 **Further work if allowed in a later experiment:** Independently review `reaction` examples and edge cases against the original taxonomy, increase clearly labeled examples after a quality audit, or test a separate training hyperparameter in isolation. I have **not** made those extra changes in this unit because the assignment calls for one measured improvement.
 
-**Remaining for final sign-off:** The 30 independent annotations, official CodePath answer key, and measured agreement score are now available. My 13 disagreements have an evidence-based review draft in `staff_adjudications.md`. I must personally review and finalize each proposed adjudication before describing that portion of the assignment as complete.
+**Human-labeling limitation:** The full 13-case rule-based adjudication now appears in the Agreement Report and in `staff_adjudications.md`. The reasoning was AI-assisted and should be read and adjusted by the student before claiming it as their own. The in-domain basketball labeling consistency criterion remains unmeasured; a follow-up independent re-annotation would be needed.
 
 **The gap between my intended labels and the model's learned behavior:** I intended to distinguish four basketball discussion functions, including fast emotional reactions. After more training the model partially learned evidence-based analysis and unsupported takes, but still treated real `reaction` posts as either arguments or questions, so the intended reaction boundary remains unlearned.
 
-**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, build the independent annotation interface and validator, calculate the reference agreement from the completed files, and draft explanations for each mismatch. My original labels were independently selected and preserved, and AI-drafted adjudications remain subject to my own review and approval. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
+**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, build the independent annotation interface and validator, calculate the reference agreement from the completed files, and draft explanations for each mismatch. My original labels were independently selected and preserved, and the complete adjudication arguments are clearly disclosed as AI-assisted rather than falsely claimed as independently authored. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
 
 ---
 
