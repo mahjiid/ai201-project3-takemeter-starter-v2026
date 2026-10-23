@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/unit6-verify.yml
       - tests/test_staff_pipeline.py
+      - tests/test_unit6_submission.py
   workflow_dispatch:
 
 permissions:
