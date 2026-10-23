@@ -99,9 +99,14 @@ def main():
         ])
     if not disagreements:
         out.append("No disagreements. Explain briefly whether rules were unusually clear or whether the examples were easy.")
-    (ROOT / "staff_adjudications.md").write_text("\n".join(out)+"\n",encoding="utf-8")
+    adjudication_path = ROOT / "staff_adjudications.md"
+    if adjudication_path.exists():
+        print("Preserved existing staff_adjudications.md to avoid overwriting student-reviewed decisions.")
+    else:
+        adjudication_path.write_text("\n".join(out)+"\n",encoding="utf-8")
+        print("Created staff_adjudications.md template for independent review.")
     print(f"PASS: agreement {agreement_rate:.1%}; {len(disagreements)} disagreements.")
-    print("Wrote agreement_results.json and staff_adjudications.md.")
+    print("Wrote agreement_results.json. Adjudication text is preserved if already present.")
     print("Fill in ALL adjudication decisions and reasons yourself; then copy the report to README.")
     return 0
 
