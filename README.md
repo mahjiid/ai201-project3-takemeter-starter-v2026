@@ -259,9 +259,13 @@ The original 30-post test set has only six `analysis` and five `reaction` exampl
 
 ## Agreement Report
 
-**Status: awaiting independent human annotations and teaching-fellow reference labels.**
+**Current status (October 23, 2026): My independent annotations are COMPLETE and validated; the official reference labels are still pending.**
 
-I have prepared `staff_annotation_helper.html`, an offline 30-post interface with the staff taxonomy and a download button that exports `my_staff_labels.csv` only after all 30 human choices are made. The original blank `staff_annotation_worksheet.csv` remains available. Neither file represents completed independent human labeling. Apply the three labels in `data/staff_taxonomy.md` yourself, save the finished `my_staff_labels.csv`, and only then request `data/staff_labels.csv` from the teaching fellow. Run `python scripts/validate_and_prepare_agreement.py` (no third-party packages required; it writes `agreement_results.json` and `staff_adjudications.md` once the TF file is present), optionally cross-check with `python agreement.py`, and document **every** disagreement with both labels, a written conclusion and reasoning. Nothing here has been fabricated.
+I independently selected labels for all **30** posts under the three-label staff taxonomy in `data/staff_taxonomy.md`. My answers are committed as `my_staff_labels.csv`. The standard-library validation script confirmed all 30 original texts matched exactly, that each label was valid, and that no posts were missing. My label counts are **10 `analysis` / 10 `hot_take` / 10 `reaction`**. Those are my annotations, **not** staff agreement results, and do not by themselves demonstrate consistency.
+
+After completing my own labels, I requested `data/staff_labels.csv` from CodePath Support, but I have **not received the teaching fellow's independent reference labels**. I cannot report an agreement percentage or claim that any specific annotation agrees or disagrees with staff yet. I will preserve my original choices for a fair blind comparison.
+
+As soon as the official reference file is received, it should be placed in `data/staff_labels.csv` locally (this file is Git-ignored to avoid publishing the staff answer key). Run `python scripts/validate_and_prepare_agreement.py` to produce `agreement_results.json` and `staff_adjudications.md`. Optionally corroborate with `python agreement.py`. I must then personally adjudicate **every actual disagreement**, citing the staff taxonomy and distinguishing my misapplication of a rule from genuine rule ambiguity. The final agreement rate and adjudications will be inserted in this section when that evidence exists; no values have been invented.
 
 **Measurement caveat:** The staff exercise uses three labels from a fictional running forum, while the user's Unit 5 classifier uses four labels from NBA posts. Therefore staff agreement directly measures how reliably an external written taxonomy is interpreted; it is **not identical** to independently relabeling the original NBA four-label corpus. The precommitted ≥80% NBA consistency criterion is not established by this staff set alone.
 
@@ -316,7 +320,7 @@ The measured six-epoch change improved average accuracy and macro F1 but **faile
 
 **Further work if allowed in a later experiment:** Independently review `reaction` examples and edge cases against the original taxonomy, increase clearly labeled examples after a quality audit, or test a separate training hyperparameter in isolation. I have **not** made those extra changes in this unit because the assignment calls for one measured improvement.
 
-**Still required from a human and the TF:** Label the 30 running-forum posts independently using `data/staff_taxonomy.md`, then obtain `data/staff_labels.csv`, run `agreement.py`, and adjudicate every disagreement with a defensible reason. Until then, human agreement is **not measured** and no grading claim about it is warranted.
+**Still required from the TF and from me:** My 30 independent staff-set annotations have been completed and committed. The outstanding input is the *official* `data/staff_labels.csv` answer key from CodePath; after it arrives, I must run the agreement comparison and personally adjudicate each actual disagreement with reasons grounded in the staff rules. Until then, agreement is **unmeasured**, so no pass/fail conclusion for the human-consistency criterion is justified.
 
 **The gap between my intended labels and the model's learned behavior:** I intended to distinguish four basketball discussion functions, including fast emotional reactions. After more training the model partially learned evidence-based analysis and unsupported takes, but still treated real `reaction` posts as either arguments or questions, so the intended reaction boundary remains unlearned.
 
