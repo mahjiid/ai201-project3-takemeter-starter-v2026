@@ -83,6 +83,17 @@ class TestStaffAnnotationWorkflow(unittest.TestCase):
         self.assertIn("invalid", r.stderr)
         self.assertFalse((self.root/"agreement_results.json").exists())
 
+    def test_repeat_agreement_preserves_personal_adjudication_text(self):
+        self.human_file()
+        self.staff_file(mutate=True)
+        first = self.execute()
+        self.assertEqual(first.returncode, 0, first.stderr)
+        path = self.root / "staff_adjudications.md"
+        path.write_text("STUDENT REVIEWED DECISIONS — DO NOT OVERWRITE", encoding="utf-8")
+        second = self.execute()
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertEqual(path.read_text(encoding="utf-8"), "STUDENT REVIEWED DECISIONS — DO NOT OVERWRITE")
+
     def test_mock_reference_generates_two_disagreements_without_adjudicating(self):
         self.human_file()
         self.staff_file(mutate=True)
