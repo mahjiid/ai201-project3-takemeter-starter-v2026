@@ -259,16 +259,24 @@ The original 30-post test set has only six `analysis` and five `reaction` exampl
 
 ## Agreement Report
 
-**Current status (October 23, 2026): My independent annotations are COMPLETE and validated; the official reference labels are still pending.**
+**Reference received from CodePath on October 23, 2026** via email from Margaret Fero (CodePath Support). I had already saved and committed my independent annotation file `my_staff_labels.csv` before accessing it. The original 30 texts and all selected labels were kept unchanged. The staff reference file is stored locally as `data/staff_labels.csv` and excluded from public Git tracking.
 
-I independently selected labels for all **30** posts under the three-label staff taxonomy in `data/staff_taxonomy.md`. My answers are committed as `my_staff_labels.csv`. The standard-library validation script confirmed all 30 original texts matched exactly, that each label was valid, and that no posts were missing. My label counts are **10 `analysis` / 10 `hot_take` / 10 `reaction`**. Those are my annotations, **not** staff agreement results, and do not by themselves demonstrate consistency.
+| Measure | Result |
+|---|---:|
+| Compared posts | 30 |
+| Agreed | 17 |
+| Disagreed | 13 |
+| **Agreement rate** | **56.7%** |
+| Staff labels vs. my saved labels | `agreement_results.json` |
+| Original label selections | `my_staff_labels.csv` |
 
-After completing my own labels, I requested `data/staff_labels.csv` from CodePath Support, but I have **not received the teaching fellow's independent reference labels**. I cannot report an agreement percentage or claim that any specific annotation agrees or disagrees with staff yet. I will preserve my original choices for a fair blind comparison.
+**Interpretation:** This result is below my precommitted 80% human consistency target **numerically**, but the staff exercise is in a *different three-label running-forum taxonomy*, while my original project uses four basketball categories. I therefore cannot claim this is a direct measurement of consistency on my original 200 NBA annotations. The graded Unit 6 skill is independent adjudication and diagnosis, not achieving a particular score.
 
-As soon as the official reference file is received, it should be placed in `data/staff_labels.csv` locally (this file is Git-ignored to avoid publishing the staff answer key). Run `python scripts/validate_and_prepare_agreement.py` to produce `agreement_results.json` and `staff_adjudications.md`. Optionally corroborate with `python agreement.py`. I must then personally adjudicate **every actual disagreement**, citing the staff taxonomy and distinguishing my misapplication of a rule from genuine rule ambiguity. The final agreement rate and adjudications will be inserted in this section when that evidence exists; no values have been invented.
+**Each of the 13 actual disagreements has an evidence-based proposed explanation:** See [`staff_adjudications.md`](staff_adjudications.md), which reproduces the exact post, my original label, CodePath's label, a proposed call, the applicable taxonomy decision rule, and the reasoning. This is an **AI-assisted review draft** that still requires me to approve or revise each judgment personally before I treat it as my final adjudication. It would be misleading to claim that these draft arguments are already my approved decisions.
 
-**Measurement caveat:** The staff exercise uses three labels from a fictional running forum, while the user's Unit 5 classifier uses four labels from NBA posts. Therefore staff agreement directly measures how reliably an external written taxonomy is interpreted; it is **not identical** to independently relabeling the original NBA four-label corpus. The precommitted ≥80% NBA consistency criterion is not established by this staff set alone.
+**Tentative pattern diagnosis:** I overused `analysis` for confident claims that merely contain numbers, and overused `hot_take`/`analysis` when a writer was reporting their immediate personal experience. Several data-backed comparisons were initially mislabeled `reaction` or `hot_take`. For `sp_003` the central issue remains genuinely debatable: the timeline and result changes are checkable, but the asserted **turnout** mechanism is not separately demonstrated. These disagreements expose taxonomy-application risks; they do not, by themselves, prove the cause of the distinct basketball classifier's low F1.
 
+**Final submission gate:** Review, amend and approve each of the 13 proposed adjudications in my own words, then copy the finalized reasoning into this section or submit it as an explicitly linked adjudication document. Do not publish the unabridged staff answer key.
 ---
 
 ## The Improvement
@@ -320,11 +328,11 @@ The measured six-epoch change improved average accuracy and macro F1 but **faile
 
 **Further work if allowed in a later experiment:** Independently review `reaction` examples and edge cases against the original taxonomy, increase clearly labeled examples after a quality audit, or test a separate training hyperparameter in isolation. I have **not** made those extra changes in this unit because the assignment calls for one measured improvement.
 
-**Still required from the TF and from me:** My 30 independent staff-set annotations have been completed and committed. The outstanding input is the *official* `data/staff_labels.csv` answer key from CodePath; after it arrives, I must run the agreement comparison and personally adjudicate each actual disagreement with reasons grounded in the staff rules. Until then, agreement is **unmeasured**, so no pass/fail conclusion for the human-consistency criterion is justified.
+**Remaining for final sign-off:** The 30 independent annotations, official CodePath answer key, and measured agreement score are now available. My 13 disagreements have an evidence-based review draft in `staff_adjudications.md`. I must personally review and finalize each proposed adjudication before describing that portion of the assignment as complete.
 
 **The gap between my intended labels and the model's learned behavior:** I intended to distinguish four basketball discussion functions, including fast emotional reactions. After more training the model partially learned evidence-based analysis and unsupported takes, but still treated real `reaction` posts as either arguments or questions, so the intended reaction boundary remains unlearned.
 
-**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, build the independent annotation interface and validator, and write up the measured tables. It did **not** create an independent human annotation or claim to have adjudicated staff disagreements. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
+**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, build the independent annotation interface and validator, calculate the reference agreement from the completed files, and draft explanations for each mismatch. My original labels were independently selected and preserved, and AI-drafted adjudications remain subject to my own review and approval. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
 
 ---
 
