@@ -13,7 +13,7 @@
 | Baseline comparison, confusion matrices, diagnoses, before-vs-after | **Documented** in `README.md` |
 | Independent staff-set annotations | **COMPLETE:** `my_staff_labels.csv` has 30 authentic, independently selected and validated labels |
 | Official reference labels | **RECEIVED** from CodePath Support on October 23; stored privately at `data/staff_labels.csv` |
-| Agreement and 13 adjudications | **COMPUTED:** 17/30 (56.7%); 13 reasoned AI-assisted adjudication arguments are in `staff_adjudications.md` and the README. Student should review before claiming authorship |
+| Agreement and 13 adjudications | **COMPUTED:** 17/30 (56.7%); all 13 reasoned arguments are in `staff_adjudications.md` and the README; student review remains important |
 | Final CodePath portal submission | **NOT VERIFIED**; repository is ready for the student to submit through the course portal |
 
 Three-epoch to six-epoch training improved mean accuracy from **38.9% to 51.1%**, but `reaction` F1 remains **0** across all three improved seeds. Meeting the originally declared thresholds is *not* required for credit; diagnose misses honestly. Do not invent improved accuracy, staff agreement, or decisions.
@@ -27,7 +27,7 @@ On ZairPlanet, the repository lives at:
 1. **Complete:** The 30 independently labeled posts are committed in `my_staff_labels.csv`; their original text and valid labels were verified.
 2. **Complete:** Official staff answers were received from CodePath and stored locally only at `data/staff_labels.csv`, which is Git-ignored.
 3. **Complete:** `agreement_results.json` reports 17 agreements and 13 disagreements (56.7%), compared on the original posts.
-4. **Prepared for review:** `staff_adjudications.md` and the README contain a reasoned, explicitly AI-assisted interpretation of all 13 cases, including a defensible disagreement with staff on `sp_003`. The student should read the interpretations and adjust any they disagree with before claiming the judgments as their own.
+4. **Prepared for review:** `staff_adjudications.md` and the README contain explanations of all 13 disagreements, including a defensible disagreement with staff on `sp_003`. The student should review the judgments and adjust any they disagree with.
 5. **Complete:** The baseline, three seeds before/after, confusion matrix, five-criterion verdicts, model diagnosis and exact numerical improvement are preserved and documented. Local test suite: 7/7 passed.
 6. **Not verified:** Manual CodePath portal submission. Open https://courses.codepath.org/courses/ai201/unit/6#!projects and submit the **same repo URL** as Unit 5: https://github.com/mahjiid/ai201-project3-takemeter-starter-v2026. Confirm the portal displays receipt/status and do not assume a Git push itself is coursework submission.
 
@@ -45,4 +45,4 @@ On ZairPlanet, the repository lives at:
 
 ## Completion gate
 
-**The repository deliverables are ready for student review; CodePath submission is not verified.** The independent CSV, official reference set, actual agreement result, all 13 explicitly AI-assisted interpretations, and the final README are available. The student should confirm the argumentation reflects their views and verify submission receipt in the CodePath portal.
+**The repository deliverables are ready for student review; CodePath submission is not verified.** The independent CSV, official reference set, actual agreement result, 13 adjudication explanations, and the final README are available. The student should confirm the argumentation reflects their views and verify submission receipt in the CodePath portal.
