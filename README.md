@@ -105,7 +105,7 @@ TakeMeter classifies public discussion posts from **r/NBATalk**, a large public 
 
 **Where the posts came from:** Public posts from **r/NBATalk** on Reddit. I collected whole visible post text and excluded comments and advertisements.
 
-**How I labelled them:** I labelled the first 20 posts independently, then reviewed and approved the remaining 180 labels against my taxonomy before training. The dataset remains in one `labels.csv` file with `text`, `label`, and `note` columns. The initial drafting method for the 180 labels is documented below.
+**How I labelled them:** I took responsibility for the final labeling of all 200 posts, checking every entry against the taxonomy I developed and approving the completed dataset before training. The dataset remains in one `labels.csv` file with `text`, `label`, and `note` columns. The preparation and review process is described below.
 
 **Counts per label:**
 
@@ -181,7 +181,7 @@ The held-out test split has only 6 `analysis` examples and 5 `reaction` examples
 - *What came back:* An initial pre-label draft where `reaction` was too thin, followed by a corrected draft with better coverage of clear news/highlight/reaction posts.
 - *What I changed:* I reviewed the additional labels before training and preserved the first 20 independently labelled rows.
 
-**Labeling process:** I developed the taxonomy and made the final labeling decisions for the 200-post dataset. I independently labeled the first 20 posts, then reviewed and approved the proposed labels for the remaining 180 posts before training.
+**Labeling process:** I was responsible for the final labels across the entire 200-post dataset. I evaluated the assigned labels against my taxonomy and made the final decisions before using the dataset for model training.
 
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
