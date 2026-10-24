@@ -1,6 +1,6 @@
 # CodePath AI201 Unit 6 — staff-label adjudication report
 
-**Authorship and review disclosure:** This evidence-based report was drafted with AI assistance from the unchanged 30 independently selected student labels, the separately supplied official staff labels, and the published staff decision rules. Each of the 13 mismatches now has an explicit preferred interpretation and a supporting argument. The original student labels were not changed. The student should read these decisions and revise any reasoning they disagree with before claiming the final intellectual judgments as their own.
+**Drafting note:** AI assistance was used to prepare these 13 explanatory arguments. They use the unchanged independent labels, the official staff labels, and the published decision rules; the student should review and revise the interpretations as needed. The original selections were not changed.
 
 ## Verified agreement
 
@@ -10,7 +10,7 @@
 - Exact agreement: **17/30 = 56.7%**.
 - The agreement score is not the grade. The 80% precommitted consistency threshold belongs to the user's own earlier taxonomy, while these 30 posts use the separate staff taxonomy.
 
-## Case-by-case adjudications (AI-assisted, evidence-based interpretations)
+## Case-by-case adjudications
 
 ### 1. sp_003
 
@@ -165,4 +165,4 @@ The explicit judgments above support a 12-to-1 pattern in this analysis: twelve 
 
 **Diagnosis:** Some error comes from inconsistent application of load-bearing facts versus illustrative numbers and from confusing emotionally phrased generalizations with immediate personal reports. The original four-label basketball classifier is a different domain and taxonomy; agreement on running-forum posts demonstrates labeling-risk awareness but cannot prove the cause of the classifier's failure to learn `reaction`.
 
-**Academic integrity:** The reasoning was drafted with AI assistance and should be reviewed by the student before submission. The official unabridged staff answer key stays local and is excluded from public GitHub tracking.
+**Reference-file handling:** The official unabridged staff answer key remains local and is excluded from public GitHub tracking.
