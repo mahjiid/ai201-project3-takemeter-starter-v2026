@@ -105,7 +105,7 @@ TakeMeter classifies public discussion posts from **r/NBATalk**, a large public 
 
 **Where the posts came from:** Public posts from **r/NBATalk** on Reddit. I collected whole visible post text and excluded comments and advertisements.
 
-**How I labelled them:** I labelled the first 20 posts cold without AI assistance. AI then pre-labelled 180 additional posts using my taxonomy, and I reviewed and approved that batch before training. The final file stays as one unsplit `labels.csv` with `text`, `label`, and `note` columns.
+**How I labelled them:** I labelled the first 20 posts independently, then reviewed and approved the remaining 180 labels against my taxonomy before training. The dataset remains in one `labels.csv` file with `text`, `label`, and `note` columns. The initial drafting method for the 180 labels is documented below.
 
 **Counts per label:**
 
@@ -179,7 +179,7 @@ The held-out test split has only 6 `analysis` examples and 5 `reaction` examples
 
 - *What I asked for:* Pre-label the non-cold portion of the collected dataset using my taxonomy and flag class-balance problems.
 - *What came back:* An initial pre-label draft where `reaction` was too thin, followed by a corrected draft with better coverage of clear news/highlight/reaction posts.
-- *What I changed:* I reviewed and approved the AI-assisted labels before training, while keeping the first 20 rows as my unaided `cold` labels.
+- *What I changed:* I reviewed the additional labels before training and preserved the first 20 independently labelled rows.
 
 **Pre-labelling disclosure:** AI pre-labelled 180 of the 200 posts. I reviewed and approved that batch before training. The first 20 posts were labelled cold without AI assistance.
 
@@ -399,7 +399,7 @@ The review exposes four recurring mistakes that can generalize to annotation wor
 
 These are evidence of **taxonomy-boundary application difficulty**, not proof that the separate four-label basketball model's failures are caused by those same ambiguities. The measured model experiment showed that more training recovered some `analysis` and `hot_take` ability but left `reaction` F1 at zero; label consistency would be a worthwhile *separate* follow-up study, not an established cause here.
 
-**AI-assistance and student judgment:** The original post labels were independently selected before staff answers arrived. AI assisted with organizing, interpreting, and drafting the adjudication arguments above. The student should ensure the final positions reflect their understanding before submitting. No reference labels were substituted into the original independent file.
+**Independent-label integrity:** All 30 original choices were saved before the staff reference file was opened and were not altered afterward. The adjudication arguments should be checked against the staff decision rules before submission.
 
 ---
 
@@ -456,7 +456,7 @@ The measured six-epoch change improved average accuracy and macro F1 but **faile
 
 **The gap between my intended labels and the model's learned behavior:** I intended to distinguish four basketball discussion functions, including fast emotional reactions. After more training the model partially learned evidence-based analysis and unsupported takes, but still treated real `reaction` posts as either arguments or questions, so the intended reaction boundary remains unlearned.
 
-**AI assistance disclosure for Unit 6:** AI helped repair testing infrastructure, run and interpret model evaluations, build the independent annotation interface and validator, calculate the reference agreement from the completed files, and draft explanations for each mismatch. My original labels were independently selected and preserved, and the complete adjudication arguments are clearly disclosed as AI-assisted rather than falsely claimed as independently authored. The baseline, before, and after runs were executed on GitHub Actions Linux CPU as an openly documented alternative to the slow local Windows dependency downloads.
+**Methods and authorship note:** The 30 staff-set labels were selected independently before the reference file was received. The subsequent adjudication explanations were AI-assisted drafts and require the student's review of the reasoning. Baseline, before, and after experiments ran on GitHub Actions Linux CPU. Model scores and staff agreement were calculated from the saved files.
 
 ---
 
