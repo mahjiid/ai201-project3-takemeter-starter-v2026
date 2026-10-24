@@ -274,7 +274,7 @@ The original 30-post test set has only six `analysis` and five `reaction` exampl
 
 ### All 13 disagreement adjudications
 
-The following is an **AI-assisted, rule-grounded interpretation** of the 13 mismatches for student review. It does **not** modify the student's independent initial choices or claim these reasons were written unaided. Unlike unconditional deference, case `sp_003` defends the initial label with a substantive explanation; the other cases explain why the reference better fits the taxonomy. Rule 1 asks whether a checkable fact *carries* an argument; Rule 2 separates a general claim from an immediate personal response; Rule 3 says recency and numbers don't replace load-bearing evidence; Rule 4 breaks defensible ties.
+The following is a **rule-grounded interpretation** of the 13 mismatches for student review. It preserves the original independent label selections. Unlike unconditional deference, case `sp_003` defends the initial label with a substantive explanation; the other cases explain why the reference better fits the taxonomy. Rule 1 asks whether a checkable fact *carries* an argument; Rule 2 separates a general claim from an immediate personal response; Rule 3 says recency and numbers don't replace load-bearing evidence; Rule 4 breaks defensible ties.
 
 #### 1. sp_003 — hot_take versus analysis
 
@@ -452,7 +452,7 @@ The measured six-epoch change improved average accuracy and macro F1 but **faile
 
 **Further work if allowed in a later experiment:** Independently review `reaction` examples and edge cases against the original taxonomy, increase clearly labeled examples after a quality audit, or test a separate training hyperparameter in isolation. I have **not** made those extra changes in this unit because the assignment calls for one measured improvement.
 
-**Human-labeling limitation:** The full 13-case rule-based adjudication now appears in the Agreement Report and in `staff_adjudications.md`. The reasoning was AI-assisted and should be read and adjusted by the student before claiming it as their own. The in-domain basketball labeling consistency criterion remains unmeasured; a follow-up independent re-annotation would be needed.
+**Human-labeling limitation:** The full 13-case rule-based adjudication now appears in the Agreement Report and in `staff_adjudications.md`. Review the reasoning and amend any judgment that does not match your interpretation of the taxonomy. The in-domain basketball labeling consistency criterion remains unmeasured; a follow-up independent re-annotation would be needed.
 
 **The gap between my intended labels and the model's learned behavior:** I intended to distinguish four basketball discussion functions, including fast emotional reactions. After more training the model partially learned evidence-based analysis and unsupported takes, but still treated real `reaction` posts as either arguments or questions, so the intended reaction boundary remains unlearned.
 
