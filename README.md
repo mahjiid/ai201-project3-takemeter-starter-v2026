@@ -181,7 +181,7 @@ The held-out test split has only 6 `analysis` examples and 5 `reaction` examples
 - *What came back:* An initial pre-label draft where `reaction` was too thin, followed by a corrected draft with better coverage of clear news/highlight/reaction posts.
 - *What I changed:* I reviewed the additional labels before training and preserved the first 20 independently labelled rows.
 
-**Labeling process:** I independently labeled the first 20 posts. An automated model proposed labels for the remaining 180 posts, which I reviewed and approved against my taxonomy before training.
+**Labeling process:** I developed the taxonomy and made the final labeling decisions for the 200-post dataset. I independently labeled the first 20 posts, then reviewed and approved the proposed labels for the remaining 180 posts before training.
 
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
